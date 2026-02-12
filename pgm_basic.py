@@ -1,5 +1,5 @@
 # mousebot_game.py
-# Experiment 1: Python Fundamentals through a MouseBot Navigation Game
+# Experiment 0: Python Fundamentals through a MouseBot Navigation Game
 # Author: MMJ | Course: Artificial Intelligence | Language: Python 3.x
 
 map = [
