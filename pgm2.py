@@ -1,76 +1,84 @@
-import heapq
+from collections import deque
 
 # Initial and goal states
-initial_state = (3, 3, 1)
-goal_state = (0, 0, 0)
+initial_state = (3, 3, 'L')   # (Missionaries_left, Cannibals_left, Boat_position)
+goal_state = (0, 0, 'R')
 
-visited = set()
+# Possible moves (Missionaries, Cannibals)
+moves = [
+    (1, 0),
+    (2, 0),
+    (0, 1),
+    (0, 2),
+    (1, 1)
+]
 
-# Heuristic function
-def heuristic(state):
-    # Number of people remaining on left side
-    return state[0] + state[1]
-
-# Check if state is valid
+# Check if a state is valid
 def is_valid(m, c):
     if m < 0 or c < 0 or m > 3 or c > 3:
         return False
+    mr = 3 - m
+    cr = 3 - c
 
-    # Missionaries eaten condition
     if m > 0 and c > m:
         return False
-
-    m_right = 3 - m
-    c_right = 3 - c
-
-    if m_right > 0 and c_right > m_right:
+    if mr > 0 and cr > mr:
         return False
-
     return True
 
-# Generate next states
-def successors(state):
-    m, c, boat = state
-    moves = [(1,0), (2,0), (0,1), (0,2), (1,1)]
-    result = []
 
-    for dm, dc in moves:
-        if boat == 1:  # boat on left
-            new_state = (m-dm, c-dc, 0)
-        else:          # boat on right
-            new_state = (m+dm, c+dc, 1)
+def get_action(move_m, move_c, boat):
+    action = ""
+    if move_m > 0:
+        action += f"{move_m} Missionary "
+    if move_c > 0:
+        action += f"{move_c} Cannibal "
 
-        if is_valid(new_state[0], new_state[1]):
-            result.append(new_state)
+    direction = "Left to Right" if boat == 'L' else "Right to Left"
+    return action + "moves from " + direction
 
-    return result
+def bfs():
+    queue = deque()
+    queue.append((initial_state, []))
+    visited = set()
 
-# Best First Search
-def best_first_search():
-    pq = []
-    heapq.heappush(pq, (heuristic(initial_state), initial_state, []))
+    while queue:
+        (m, c, boat), path = queue.popleft()
 
-    while pq:
-        _, current, path = heapq.heappop(pq)
+        if (m, c, boat) == goal_state:
+            return path + [(m, c, boat, "Goal Reached")]
 
-        if current in visited:
+        if (m, c, boat) in visited:
             continue
 
-        visited.add(current)
-        path = path + [current]
+        visited.add((m, c, boat))
 
-        if current == goal_state:
-            return path
+        for move_m, move_c in moves:
+            if boat == 'L':
+                new_m = m - move_m
+                new_c = c - move_c
+                new_boat = 'R'
+            else:
+                new_m = m + move_m
+                new_c = c + move_c
+                new_boat = 'L'
 
-        for next_state in successors(current):
-            if next_state not in visited:
-                heapq.heappush(pq,
-                    (heuristic(next_state), next_state, path))
+            if is_valid(new_m, new_c):
 
+                action = get_action(move_m, move_c, boat)
+
+                queue.append(((new_m, new_c, new_boat),
+                              path + [(m, c, boat, action)]))
     return None
 
-solution = best_first_search()
+solution = bfs()
 
-print("Solution Path:")
-for step in solution:
-    print(step)
+print("\nMissionaries and Cannibals Solution using BFS\n")
+step = 1
+for state in solution:
+    m, c, boat, action = state
+    print(f"Step {step}:")
+    print(f"Action: {action}")
+    print(f"Left Bank -> Missionaries: {m}, Cannibals: {c}, Boat: {boat}")
+    print("-----------------------------------")
+    step += 1
