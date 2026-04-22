@@ -1,4 +1,5 @@
 # Graph with explicit node types
+'''
 graph = {
     'A': {'type': 'OR', 'children': [('B',1), ('C',1)]},
     'B': {'type': 'AND', 'children': [('D',1), ('E',1)]},
@@ -16,7 +17,7 @@ heuristic = {
 }
 '''
 graph = {
-    'A': {'type':'OR', 'children':[('B',1), ('C',1)]},
+    'A': {'type':'AND', 'children':[('B',1), ('C',1)]},
     'B': {'type':'AND', 'children':[('D',2), ('E',2)]},
     'C': {'type':'OR', 'children':[('F',2), ('G',3)]},
     'D': {'type':'OR', 'children':[('H',1), ('I',2)]},
@@ -37,7 +38,7 @@ heuristic = {
     'K':0,
     'L':0
 }
-'''
+
 solution = {}
 def ao_star(node):
     if node not in graph:
