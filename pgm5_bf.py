@@ -40,10 +40,11 @@ def print_board(arrangement):
 # Function: brute_force_8queens
 # Main function to solve 8-Queens using brute force
 # -------------------------------------------------------
-def brute_force_8queens(n=8, display_all=False):
+def brute_force_8queens(n=8, display_all=1):
     solution_count  = 0
     total_checked   = 0
     first_solution  = None
+    solutions_displayed = 0
 
     print("=" * 50)
     print("   8-Queens Problem — Brute Force Approach")
@@ -61,9 +62,10 @@ def brute_force_8queens(n=8, display_all=False):
             if solution_count == 1:
                 first_solution = arrangement
 
-            if display_all:
+            if display_all == 0 or solutions_displayed < display_all:
                 print(f"Solution #{solution_count}:")
                 print_board(arrangement)
+                solutions_displayed += 1
 
     # Display summary
     print("\n" + "=" * 50)
@@ -71,14 +73,11 @@ def brute_force_8queens(n=8, display_all=False):
     print(f"Total valid solutions found : {solution_count}")
     print("=" * 50)
 
-    # Display the first solution found
-    if first_solution:
-        print("\nFirst Valid Solution Found:")
-        print_board(first_solution)
-
 # -------------------------------------------------------
 # MAIN
 # -------------------------------------------------------
 if __name__ == "__main__":
     # Set display_all=True to print all 92 solutions
-    brute_force_8queens(n=8, display_all=False)
+    # display_all should allow me to enter number of solutions to display, or all if I enter 0
+    display_all = int(input("Enter number of solutions to display (0 for all): "))
+    brute_force_8queens(n=8, display_all=display_all)
